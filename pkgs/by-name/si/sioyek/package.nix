@@ -20,8 +20,8 @@ stdenv.mkDerivation (finalAttrs: {
   src = fetchFromGitHub {
     owner = "ahrm";
     repo = "sioyek";
-    rev = "ba481becabbd0c85692c4eeaf7d0dd8284f09c4a";
-    hash = "sha256-CQS7hFnuQAKHPT7GsoOCNqgebEAzHJecM5nPeC7n3PI=";
+    rev = "e71f7e29dd6d047c9a0245d256d2c79dcf1a679f";
+    hash = "sha256-HjvUappZchStJdkC9JYu49NuSJD1pMH+7aKVhbhNMZw=";
   };
 
   buildInputs =
