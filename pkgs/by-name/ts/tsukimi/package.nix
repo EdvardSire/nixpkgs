@@ -10,23 +10,23 @@
   openssl,
   libepoxy,
   wrapGAppsHook4,
-  makeDesktopItem,
   stdenv,
   nix-update-script,
 }:
 rustPlatform.buildRustPackage rec {
   pname = "tsukimi";
-  version = "0.16.9";
+  version = "0.19.0";
 
   src = fetchFromGitHub {
     owner = "tsukinaha";
     repo = "tsukimi";
-    rev = "v${version}";
-    hash = "sha256-SeABeXg2dpGYxGiDDwn811egRe8BYVdxK8hz7qfBagQ=";
+    tag = "v${version}";
+    hash = "sha256-5hOOIkH0VhZwlsNKAyOI714ueGcSMagoLGi5ECfqXk4=";
     fetchSubmodules = true;
   };
 
-  cargoHash = "sha256-o6FjBauHjdhxNXpqlJc/yNNTkRJyX3R4smAMrdFUjLA=";
+  useFetchCargoVendor = true;
+  cargoHash = "sha256-rgTrPJydS4685BlSEwNvmEajZEksqQicscOq/Uu9JJ4=";
 
   nativeBuildInputs = [
     pkg-config
@@ -56,7 +56,7 @@ rustPlatform.buildRustPackage rec {
     substituteInPlace build.rs \
       --replace-fail 'i18n/locale' "$out/share/locale"
 
-    substituteInPlace src/main.rs \
+    substituteInPlace src/lib.rs \
       --replace-fail '/usr/share/locale' "$out/share/locale"
   '';
 
@@ -81,8 +81,5 @@ rustPlatform.buildRustPackage rec {
     ];
     mainProgram = "tsukimi";
     platforms = lib.platforms.linux;
-    # libmpv2 crate fail to compile
-    # expected raw pointer `*const u8` found raw pointer `*const i8`
-    broken = stdenv.hostPlatform.isAarch64;
   };
 }

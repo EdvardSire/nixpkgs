@@ -12,15 +12,15 @@
 }:
 
 buildPythonPackage rec {
-  version = "6.0.1";
+  version = "6.1.1";
   pname = "icalendar";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "collective";
     repo = "icalendar";
-    rev = "refs/tags/v${version}";
-    hash = "sha256-pcTiXRiHtx7jVzxDkY6WDhzo8sg8fPecqTpRSRIdvfs=";
+    tag = "v${version}";
+    hash = "sha256-PP4wBItPv5pPQKkGX4mGPl2RUGxOALOss++imzK4G4E=";
   };
 
   patches = [

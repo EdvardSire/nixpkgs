@@ -4,7 +4,7 @@
 , libGL
 , libinput
 , libxkbcommon
-, mesa
+, libgbm
 , pango
 , udev
 , shaderc
@@ -15,16 +15,16 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "jay";
-  version = "1.5.0";
+  version = "1.9.0";
 
   src = fetchFromGitHub {
     owner = "mahkoh";
     repo = pname;
     rev = "v${version}";
-    sha256 = "sha256-cuXFkG2YwS0w4xzr7jpjr0QmVA5UJfk5SpjIQKxN/LY=";
+    sha256 = "sha256-RGBFIYVeunMhZbpRExKYh7VlhodOsCN7WzN/7UPEJdc=";
   };
 
-  cargoHash = "sha256-w3ARwQlehJq9uNSQmbUjiWik4a2W3Ax/6/BIsdDUfKM=";
+  cargoHash = "sha256-/+BdhSoRgDGibcHb+zqmtGzRHFXEgfavpBD0FQ03kyI=";
 
   SHADERC_LIB_DIR = "${lib.getLib shaderc}/lib";
 
@@ -35,7 +35,7 @@ rustPlatform.buildRustPackage rec {
   buildInputs = [
     libGL
     libxkbcommon
-    mesa
+    libgbm
     pango
     udev
     libinput
@@ -48,8 +48,8 @@ rustPlatform.buildRustPackage rec {
   ];
 
   postInstall = ''
-    install -D etc/jay.portal $out/usr/share/xdg-desktop-portal/portals/jay.portal
-    install -D etc/jay-portals.conf $out/usr/share/xdg-desktop-portal/jay-portals.conf
+    install -D etc/jay.portal $out/share/xdg-desktop-portal/portals/jay.portal
+    install -D etc/jay-portals.conf $out/share/xdg-desktop-portal/jay-portals.conf
   '';
 
   meta = with lib; {

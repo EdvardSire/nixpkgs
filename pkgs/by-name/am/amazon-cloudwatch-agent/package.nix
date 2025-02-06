@@ -11,18 +11,18 @@
 
 buildGoModule rec {
   pname = "amazon-cloudwatch-agent";
-  version = "1.300049.1";
+  version = "1.300052.0";
 
   src = fetchFromGitHub {
     owner = "aws";
     repo = "amazon-cloudwatch-agent";
-    rev = "refs/tags/v${version}";
-    hash = "sha256-/VzLSHlBT40h7iErBisfSp7cTAm3L4vmZP03UiDmBaE=";
+    tag = "v${version}";
+    hash = "sha256-YxmWh14efLSo6G8pujXzKmXYROhIAHYTczzY5tMgbLE=";
   };
 
-  vendorHash = "sha256-zsASHuTXL3brRlgLPNb4wFPHkYpUWbOdRDCXQUwZjIY=";
+  vendorHash = "sha256-EyhT1gfrd189jqcEQ97CSKziKrT2bBeQ9pWIEK039Io=";
 
-  # See the list in https://github.com/aws/amazon-cloudwatch-agent/blob/v1.300048.1/Makefile#L68-L77.
+  # See the list in https://github.com/aws/amazon-cloudwatch-agent/blob/v1.300049.1/Makefile#L68-L77.
   subPackages = [
     "cmd/config-downloader"
     "cmd/config-translator"
@@ -32,7 +32,7 @@ buildGoModule rec {
     "cmd/amazon-cloudwatch-agent-config-wizard"
   ];
 
-  # See https://github.com/aws/amazon-cloudwatch-agent/blob/v1.300048.1/Makefile#L57-L64.
+  # See https://github.com/aws/amazon-cloudwatch-agent/blob/v1.300049.1/Makefile#L57-L64.
   #
   # Needed for "amazon-cloudwatch-agent -version" to not show "Unknown".
   postInstall = ''
@@ -42,6 +42,8 @@ buildGoModule rec {
   doInstallCheck = true;
 
   nativeInstallCheckInputs = [ versionCheckHook ];
+
+  versionCheckProgram = "${builtins.placeholder "out"}/bin/amazon-cloudwatch-agent";
 
   versionCheckProgramArg = "-version";
 

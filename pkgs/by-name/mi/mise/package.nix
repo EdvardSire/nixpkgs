@@ -11,30 +11,34 @@
   git,
   pkg-config,
   openssl,
+  cacert,
   Security,
   SystemConfiguration,
   usage,
   mise,
   testers,
+  runCommand,
+  jq,
 }:
 
 rustPlatform.buildRustPackage rec {
   pname = "mise";
-  version = "2024.10.8";
+  version = "2025.2.0";
 
   src = fetchFromGitHub {
     owner = "jdx";
     repo = "mise";
     rev = "v${version}";
-    hash = "sha256-58y7jx7gmWlccezZXP5hSzrvnq8hlZ1QakF+FMgbwcc=";
+    hash = "sha256-mZZBazE8QCaz3osbLoeaIHa7tsGji6B4UkaMlKAvF0M=";
   };
 
-  cargoHash = "sha256-m2Eiqyh/rGgwRgRArs3fPWoqzi1EidZd5i66yi4SuFo=";
+  cargoHash = "sha256-ptkzkzOl2gd67GYlm25FNEDRACIeIptTwN3kcHyxtw0=";
 
   nativeBuildInputs = [
     installShellFiles
     pkg-config
   ];
+
   buildInputs =
     [ openssl ]
     ++ lib.optionals stdenv.hostPlatform.isDarwin [
@@ -50,8 +54,7 @@ rustPlatform.buildRustPackage rec {
       ./src/cli/generate/snapshots/*.snap
 
     substituteInPlace ./src/test.rs \
-      --replace-fail '/usr/bin/env bash' '${lib.getExe bash}' \
-      --replace-fail '"git"' '"${lib.getExe git}"'
+      --replace-fail '/usr/bin/env bash' '${lib.getExe bash}'
 
     substituteInPlace ./src/git.rs \
       --replace-fail '"git"' '"${lib.getExe git}"'
@@ -63,6 +66,8 @@ rustPlatform.buildRustPackage rec {
       --replace-fail '"env"' '"${lib.getExe' coreutils "env"}"' \
       --replace-fail 'cmd!("direnv"' 'cmd!("${lib.getExe direnv}"'
   '';
+
+  nativeCheckInputs = [ cacert ];
 
   checkFlags = [
     # last_modified will always be different in nix
@@ -90,7 +95,32 @@ rustPlatform.buildRustPackage rec {
 
   passthru = {
     updateScript = nix-update-script { };
-    tests.version = testers.testVersion { package = mise; };
+    tests = {
+      version = (testers.testVersion { package = mise; }).overrideAttrs (old: {
+        nativeBuildInputs = old.nativeBuildInputs ++ [ cacert ];
+      });
+      usageCompat =
+        # should not crash
+        runCommand "mise-usage-compatibility"
+          {
+            nativeBuildInputs = [
+              mise
+              usage
+              jq
+            ];
+          }
+          ''
+            export HOME=$(mktemp -d)
+
+            spec="$(mise usage)"
+            for shl in bash fish zsh; do
+              echo "testing $shl"
+              usage complete-word --shell $shl --spec "$spec"
+            done
+
+            touch $out
+          '';
+    };
   };
 
   meta = {

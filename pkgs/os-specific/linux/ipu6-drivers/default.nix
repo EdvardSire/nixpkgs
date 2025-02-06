@@ -1,8 +1,10 @@
-{ lib
-, stdenv
-, fetchFromGitHub
-, ivsc-driver
-, kernel
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  ivsc-driver,
+  kernel,
+  kernelModuleMakeFlags,
 }:
 
 stdenv.mkDerivation rec {
@@ -30,7 +32,7 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = kernel.moduleBuildDependencies;
 
-  makeFlags = kernel.makeFlags ++ [
+  makeFlags = kernelModuleMakeFlags ++ [
     "KERNELRELEASE=${kernel.modDirVersion}"
     "KERNEL_SRC=${kernel.dev}/lib/modules/${kernel.modDirVersion}/build"
   ];
