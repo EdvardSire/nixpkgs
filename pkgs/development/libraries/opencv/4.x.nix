@@ -58,6 +58,8 @@
   gtk3,
   enableVtk ? false,
   vtk,
+  enableQT5 ? false,
+  qt5,
   enableFfmpeg ? true,
   ffmpeg,
   enableGStreamer ? true,
@@ -361,6 +363,9 @@ effectiveStdenv.mkDerivation {
     ++ optionals enableVtk [
       vtk
     ]
+    ++ optionals enableQT5 [
+      qt5.qtbase
+    ]
     ++ optionals enableJPEG [
       libjpeg
     ]
@@ -471,6 +476,9 @@ effectiveStdenv.mkDerivation {
     ]
     ++ optionals enableCuda [
       cudaPackages.cuda_nvcc
+    ]
+    ++ optionals enableQT5 [
+      qt5.wrapQtAppsHook
     ];
 
   env.NIX_CFLAGS_COMPILE = optionalString enableEXR "-I${ilmbase.dev}/include/OpenEXR";
@@ -535,6 +543,9 @@ effectiveStdenv.mkDerivation {
       (cmakeFeature "CUDA_ARCH_PTX" (last cudaCapabilities))
 
       (cmakeOptionType "path" "NVIDIA_OPTICAL_FLOW_2_0_HEADERS_PATH" nvidia-optical-flow-sdk.outPath)
+    ]
+    ++ optionals enableQT5 [
+      (cmakeBool "WITH_QT" true)
     ]
     ++ optionals effectiveStdenv.hostPlatform.isDarwin [
       (cmakeBool "WITH_OPENCL" false)
