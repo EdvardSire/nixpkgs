@@ -446,6 +446,9 @@ effectiveStdenv.mkDerivation {
     pkg-config
     unzip
   ]
+  ++ optionals enableQT5 [
+    qt5.wrapQtAppsHook
+  ]
   ++ optionals enablePython (
     [
       pythonPackages.pip
