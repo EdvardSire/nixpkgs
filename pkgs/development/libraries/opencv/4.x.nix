@@ -57,6 +57,8 @@
   gtk3,
   enableVtk ? false,
   vtk,
+  enableQT5 ? false,
+  qt5,
   enableFfmpeg ? true,
   ffmpeg,
   enableGStreamer ? true,
@@ -350,6 +352,9 @@ effectiveStdenv.mkDerivation {
   ++ optionals enableVtk [
     vtk
   ]
+  ++ optionals enableQT5 [
+    qt5.qtbase
+  ]
   ++ optionals enableJPEG [
     libjpeg
   ]
@@ -502,6 +507,9 @@ effectiveStdenv.mkDerivation {
           (enableCuda && effectiveStdenv.cc.isClang)
       )
     ))
+  ]
+  ++ optionals enableQT5 [
+    (cmakeBool "WITH_QT" true)
   ]
   ++ optionals enableCuda [
     (cmakeBool "CUDA_FAST_MATH" true)
